@@ -23,20 +23,35 @@ cube16 = ['G', 'I', 'L', 'R', 'U', 'W']
 # list of available cubes
 master_cube_list = [cube1, cube2, cube3, cube4, cube5, cube6, cube7, cube8, cube9, cube10, cube11, cube12, cube13, cube14, cube15, cube16]
 
+
 current_cube_list = master_cube_list
 
 # have a list of all available cubes
 # as cubes are removed, pop that cube from the master list
 
 remaining_cube_count = 16
-
+cubes_picked = 0
+row = ''
+print '\r'
 for x in range(0, 16):
     # number of remaining cubes
+    cubes_picked += 1
     y = random.randint(0,remaining_cube_count-1)
-    print str(remaining_cube_count) + ' cubes available \t ' + str(y) + ' chosen'
+#    print str(remaining_cube_count) + ' cubes available \t ' + str(y) + ' chosen'
 #    print 'list item '+str(y) + '\t ' + str(remaining_cube_count) + ' cubes remaining'
-    print current_cube_list[y-1]
+
+    # use randint() to choose one of the cube faces
+    cube_face = random.randint(0,5)
+#    print current_cube_list[y-1][cube_face]
+    row = row + ' ' + current_cube_list[y-1][cube_face]
+    if cubes_picked % 4 == 0:
+        # print out the row of letters that were chosen
+        print row
+        row = ''
+#        print '\r'
+#    print current_cube_list[y-1]
 #    print current_cube_list
-    current_cube_list.pop(y)
+    current_cube_list.pop(y-1)
     remaining_cube_count = remaining_cube_count -1
-    
+
+print '\r'
