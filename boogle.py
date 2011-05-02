@@ -32,6 +32,8 @@ current_cube_list = master_cube_list
 remaining_cube_count = 16
 cubes_picked = 0
 row = ''
+letter = ''
+last_letter = ''
 print '\r'
 for x in range(0, 16):
     # number of remaining cubes
@@ -42,11 +44,20 @@ for x in range(0, 16):
 
     # use randint() to choose one of the cube faces
     cube_face = random.randint(0,5)
+    letter = current_cube_list[y-1][cube_face]
 #    print current_cube_list[y-1][cube_face]
-    row = row + ' ' + current_cube_list[y-1][cube_face]
+    if len(row) == 0:
+        row = letter
+    else:
+        if last_letter == 'Qu':
+            row = row + ' ' + letter
+        else:
+            row = row + '  ' + letter
+
+    last_letter = letter
     if cubes_picked % 4 == 0:
         # print out the row of letters that were chosen
-        print row
+        print '\t' + row
         row = ''
 #        print '\r'
 #    print current_cube_list[y-1]
