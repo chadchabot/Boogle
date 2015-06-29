@@ -1,10 +1,5 @@
-
 import random
-
-
-def boogle():
-  cube_list = generate_board()
-  print_board(cube_list)
+import sys
 
 def generate_board():
   # letter distribution matches official game
@@ -64,8 +59,37 @@ def print_board(board):
       row = ''
   print '\r'
 
+def check_word(word):
+  #make sure word is on the board
+  #make sure word is in the dictionary
+  if word == 'quit':
+    return False
+  return True
+
 def main():
-    boogle()
+  input = None
+  options = ['y','n']
+
+  input = raw_input("Would you like to play a game? (y/n):").strip()
+  while(input not in options):
+    print "you typed %s. Please type 'y' or 'n'" % input
+    input = None
+    input = raw_input("Would you like to play a game? (y/n):").strip()
+
+  playing = input[0] == 'y'
+
+  if playing:
+    board = generate_board()
+    #generate all possible matches? or perform on the fly checking?
+  while(playing):
+    print_board(board)
+    word = raw_input("Enter a word you want to score:").strip()
+    score = check_word(word)
+    if not score:
+      break
+
+
+  print "Thanks for playing Boogle."
 
 class Cube(object):
   def __init__(self, faces):
