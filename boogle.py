@@ -59,37 +59,78 @@ def print_board(board):
       row = ''
   print '\r'
 
-def check_word(word):
+
+def score_word(word):
+  length = len(word)
+  if length == 3 or length == 4:
+    return 1
+  elif length == 5:
+    return 2
+  elif length == 6:
+    return 3
+  elif length == 7:
+    return 5
+  elif length > 7:
+    return 11
+
+
+def check_word(word, wordList):
   #make sure word is on the board
   #make sure word is in the dictionary
+  if word in wordList:
+    return False
+  if len(word) < 3:
+    print "Your word is too short. A minimum of 3 letters is required."
+    return False
   if word == 'quit':
     return False
+
   return True
 
 def main():
   input = None
   options = ['y','n']
 
-  input = raw_input("Would you like to play a game? (y/n):").strip()
+  input = raw_input("Would you like to play a game? (y/n): ").strip()
   while(input not in options):
     print "you typed %s. Please type 'y' or 'n'" % input
     input = None
-    input = raw_input("Would you like to play a game? (y/n):").strip()
+    input = raw_input("Would you like to play a game? (y/n): ").strip()
 
   playing = input[0] == 'y'
 
   if playing:
     board = generate_board()
+    wordList = set()
+    score = 0
     #generate all possible matches? or perform on the fly checking?
   while(playing):
     print_board(board)
-    word = raw_input("Enter a word you want to score:").strip()
-    score = check_word(word)
-    if not score:
+    word = raw_input("Enter a word you want to score: ").strip()
+    if check_word(word,wordList):
+      points = score_word(word)
+      wordList.add(word)
+      print "%s is worth %d points" %(word, points)
+      score += points
+    else:
+      print "You've already scored that word. Try again.\n"
+
+    if len(wordList) == 5:
       break
+  if playing:
+    print_score(score, wordList)
 
+  exit_message()
 
-  print "Thanks for playing Boogle."
+def print_score(score, wordList):
+  print "You got %d points for %d words.\n" % (score, len(wordList))
+  print "The words you found were:"
+  for word in wordList:
+    print word
+  print "\n"
+
+def exit_message():
+  print "Thanks for playing Boogle.\nBye."
 
 class Cube(object):
   def __init__(self, faces):
