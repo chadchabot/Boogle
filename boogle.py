@@ -28,7 +28,7 @@ def generate_board():
 
   return scramble_board(master_cube_list)
 
-# take the 16 cubes and scramble their order
+# take the cubes and scramble their order
 def scramble_board(cube_list):
   cube_list = cube_list #arg is a list (mutable) so we have to create ref in scope
   scrambled_board = []
@@ -59,7 +59,7 @@ def print_board(board):
       row = ''
   print '\r'
 
-
+#calculate score of word
 def score_word(word):
   length = len(word)
   if length == 3 or length == 4:
@@ -73,11 +73,11 @@ def score_word(word):
   elif length > 7:
     return 11
 
-
-def check_word(word, wordList):
+# make sure word is valid
+def check_word(word, player):
   #make sure word is on the board
   #make sure word is in the dictionary
-  if word in wordList:
+  if word in player.wordList:
     return False
   if len(word) < 3:
     print "Your word is too short. A minimum of 3 letters is required."
@@ -100,37 +100,50 @@ def main():
   playing = input[0] == 'y'
 
   if playing:
+    player = Player("Chad")
     board = generate_board()
-    wordList = set()
-    score = 0
-    #generate all possible matches? or perform on the fly checking?
   while(playing):
     print_board(board)
     word = raw_input("Enter a word you want to score: ").strip()
-    if check_word(word,wordList):
-      points = score_word(word)
-      wordList.add(word)
-      print "%s is worth %d points" %(word, points)
-      score += points
+    if check_word(word, player):
+      player.add_word(word, score_word(word) )
     else:
       print "You've already scored that word. Try again.\n"
 
-    if len(wordList) == 5:
+    if player.num_words() == 5:
       break
   if playing:
-    print_score(score, wordList)
+    player.print_score()
 
   exit_message()
 
-def print_score(score, wordList):
-  print "You got %d points for %d words.\n" % (score, len(wordList))
-  print "The words you found were:"
-  for word in wordList:
-    print word
-  print "\n"
 
 def exit_message():
   print "Thanks for playing Boogle.\nBye."
+
+class Player(object):
+  def __init__(self, name):
+    self.name = name
+    self.score = 0
+    self.wordList = set()
+
+  def num_words(self):
+    return len(self.wordList)
+
+  def add_word(self, word, points):
+    self.wordList.add(word)
+    self.inc_score(points)
+    print "%s is worth %d points" %(word, points)
+
+  def inc_score(self, amount):
+    self.score += amount
+
+  def print_score(self):
+    print "You got %d points for %d words.\n" % (self.score, self.num_words())
+    print "The words you found were:"
+    for word in self.wordList:
+      print word
+    print "\n"
 
 class Cube(object):
   def __init__(self, faces):
