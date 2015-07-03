@@ -1,4 +1,0 @@
-We really like to play boggle, so here's a way to brush up on some Python basics, since I've been away from command line stuff for some time.
-
-todo:
-  use (learn) curses to have better ability to update the console as the user types (ex: as letters are selected)
