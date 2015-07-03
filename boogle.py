@@ -46,20 +46,11 @@ class Board(object):
 
     return scrambled_board
 
-  def reduce_row(self, row):
-    output = "\t"
-    for cube in row:
-      output += cube.face()
-    output += "\r"
-    return output
-
   def display(self):
-    output = ''
     print '\r'
     for row in self.board:
-      #output = "\t" + reduce(lambda carry,el: carry + el.face(), row) + "\r"
-      print self.reduce_row(row)
-    print output
+      print "\t" + reduce(lambda carry,el: carry + el.face(), [''] + row) + "\r"
+    print '\r'
 
   def reset_cubes(self):
     for cube in self.board:
