@@ -35,30 +35,31 @@ class Board(object):
     cube_list = self.board #arg is a list (mutable) so we have to create ref in scope
     scrambled_board = []
     remaining_cube_count = num_cubes = len(cube_list)
-    for x in range(0, num_cubes):
-      next_cube_idx = random.randint(0, remaining_cube_count-1)
-      next_cube = cube_list.pop(next_cube_idx)
-      scrambled_board.append(next_cube)
-      remaining_cube_count-=1
+    for idx in range(0,4):
+      row = []
+      for x in [0,1,2,3]:
+        next_cube_idx = random.randint(0, remaining_cube_count-1)
+        next_cube = cube_list.pop(next_cube_idx)
+        row.append(next_cube)
+        remaining_cube_count-=1
+      scrambled_board.append(row)
 
     return scrambled_board
 
-  def display(self):
-    row = ''
-    cubes_picked = 0
-    print '\r'
-    for cube in self.board:
-      cubes_picked += 1
-      if len(row) == 0:
-        row = cube.face()
-      else:
-        row = row + cube.face()
+  def reduce_row(self, row):
+    output = "\t"
+    for cube in row:
+      output += cube.face()
+    output += "\r"
+    return output
 
-      if cubes_picked % 4 == 0:
-        cubes_picked = 0
-        print '\t' + row
-        row = ''
+  def display(self):
+    output = ''
     print '\r'
+    for row in self.board:
+      #output = "\t" + reduce(lambda carry,el: carry + el.face(), row) + "\r"
+      print self.reduce_row(row)
+    print output
 
   def reset_cubes(self):
     for cube in self.board:
@@ -102,9 +103,10 @@ def main():
     input = None
     input = raw_input("Would you like to play a game? (y/n): ").strip()
 
-  playing = input[0] == 'y'
+  playing = input.lower().startswith('y')
 
   if playing:
+    #game setup
     player = Player("Chad")
     board = Board()
   while(playing):
@@ -165,10 +167,19 @@ class Cube(object):
 
   def face(self):
     letter = self.faces[self.chosen_face]
-    if letter == 'Qu':
-      return 'Qu '
+    ACTIVE = '\033[92m'
+    INACTIVE = '\033[91m'
+    END = '\033[0m'
+    if self.active:
+      output = ACTIVE
     else:
-      return letter + '  '
+      output = INACTIVE
+    if letter == 'Qu':
+      output += 'Qu '
+    else:
+      output += letter + '  '
+
+    return output + END
 
   def activate(self):
     self.active = True
